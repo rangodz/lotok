@@ -29,6 +29,7 @@ import {
 } from 'lucide-react-native';
 import { colors, radius, spacing, typography } from '@/lib/theme';
 import { categories } from '@/lib/mock';
+import { BRANDS } from '@/lib/data/vehicles';
 import { useVehicleStore } from '@/stores/vehicleStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { Card } from '@/components/ui';
@@ -62,6 +63,8 @@ export default function HomeScreen() {
   const isPro = userMode === 'pro';
   const active = getActiveVehicle();
 
+  const brandMeta = active ? BRANDS.find((b) => b.name === active.brand) : null;
+
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -94,7 +97,7 @@ export default function HomeScreen() {
           <View style={styles.headerRow}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
-                {isPro ? <Wrench size={20} color={colors.white} /> : 'S'}
+                {isPro ? <Wrench size={20} color={colors.karto} /> : 'S'}
               </Text>
             </View>
             <View style={{ flex: 1, marginLeft: spacing.sm }}>
@@ -110,7 +113,7 @@ export default function HomeScreen() {
               accessibilityLabel={t('home.notificationsLabel')}
               accessibilityRole="button"
             >
-              <Bell size={20} color={colors.white} />
+              <Bell size={20} color={colors.textSecondary} />
             </Pressable>
           </View>
 
@@ -122,8 +125,15 @@ export default function HomeScreen() {
               accessibilityLabel={`${active.brand} ${active.model}`}
               onPress={() => router.push('/garage')}
             >
-              <View style={styles.vehicleIcon}>
-                <Text style={styles.vehicleIconText}>🚗</Text>
+              <View
+                style={[
+                  styles.vehicleIcon,
+                  brandMeta ? { backgroundColor: brandMeta.color + '22' } : undefined,
+                ]}
+              >
+                <Text style={[styles.brandInitials, brandMeta ? { color: brandMeta.color } : undefined]}>
+                  {brandMeta?.initials ?? active.brand.slice(0, 2).toUpperCase()}
+                </Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.vehicleName}>
@@ -133,7 +143,7 @@ export default function HomeScreen() {
                   {active.engine} · {active.year} · {t(`home.${MARKET_LABEL[active.market] ?? 'marketEU'}`)}
                 </Text>
               </View>
-              <RefreshCw size={18} color={colors.kartoLight} />
+              <RefreshCw size={18} color={colors.textMuted} />
             </Pressable>
           ) : (
             <Pressable
@@ -149,7 +159,7 @@ export default function HomeScreen() {
                 <Text style={styles.vehicleName}>{t('home.noVehicle')}</Text>
                 <Text style={styles.vehicleMeta}>{t('home.addVehiclePrompt')}</Text>
               </View>
-              <ChevronRight size={18} color={colors.kartoLight} />
+              <ChevronRight size={18} color={colors.textMuted} />
             </Pressable>
           )}
         </View>
@@ -214,29 +224,29 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
 
   header: {
-    backgroundColor: colors.karto,
+    backgroundColor: colors.white,
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.lg,
-    borderBottomLeftRadius: radius.xl,
-    borderBottomRightRadius: radius.xl,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
   },
   headerRow: { flexDirection: 'row', alignItems: 'center' },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: radius.full,
-    backgroundColor: colors.kartoLight,
+    backgroundColor: colors.kartoSurface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { ...typography.h3, color: colors.white },
-  greetingMuted: { ...typography.caption, color: colors.kartoPale },
-  greetingName: { ...typography.h2, color: colors.white },
+  avatarText: { ...typography.h3, color: colors.karto },
+  greetingMuted: { ...typography.caption, color: colors.textMuted },
+  greetingName: { ...typography.h2, color: colors.textPrimary },
   iconButton: {
     width: 40,
     height: 40,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -272,7 +282,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  vehicleIconText: { fontSize: 22 },
+  brandInitials: { fontFamily: 'Sora_700Bold', fontSize: 14, color: colors.textSecondary },
   vehicleName: { ...typography.h3, color: colors.textPrimary },
   vehicleMeta: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
 

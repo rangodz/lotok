@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import * as Location from 'expo-location';
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { MapPin, List, Map, Star } from 'lucide-react-native';
+import { MapPin, List, Map } from 'lucide-react-native';
 import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useShops, BEJAIA, type UserLocation } from '@/hooks/useShops';
 import type { Shop } from '@/lib/mock';
@@ -73,15 +73,6 @@ function ShopCard({ shop, onPress }: { shop: Shop; onPress: () => void }) {
         <Text style={styles.cardAddress} numberOfLines={1}>{shop.address}</Text>
 
         <View style={styles.cardMeta}>
-          {/* Rating */}
-          <View style={styles.ratingRow}>
-            <Star size={12} color={colors.orange} fill={colors.orange} strokeWidth={0} />
-            <Text style={styles.ratingText}>{shop.rating.toFixed(1)}</Text>
-            <Text style={styles.reviewCount}>
-              ({t('shops.reviews', { count: shop.reviewCount })})
-            </Text>
-          </View>
-
           {/* Distance */}
           {shop.distance !== undefined && (
             <Text style={styles.distance}>
@@ -178,7 +169,7 @@ export default function ShopsScreen() {
             accessibilityState={{ selected: view === 'list' }}
             accessibilityLabel={t('shops.listView')}
           >
-            <List size={16} color={view === 'list' ? colors.white : colors.kartoLight} />
+            <List size={16} color={view === 'list' ? colors.white : colors.textMuted} />
           </Pressable>
           <Pressable
             style={[styles.segBtn, view === 'map' && styles.segBtnActive]}
@@ -187,7 +178,7 @@ export default function ShopsScreen() {
             accessibilityState={{ selected: view === 'map' }}
             accessibilityLabel={t('shops.mapView')}
           >
-            <Map size={16} color={view === 'map' ? colors.white : colors.kartoLight} />
+            <Map size={16} color={view === 'map' ? colors.white : colors.textMuted} />
           </Pressable>
         </View>
       </View>
@@ -280,9 +271,7 @@ export default function ShopsScreen() {
                 <Callout tooltip>
                   <View style={styles.callout}>
                     <Text style={styles.calloutName}>{shop.name}</Text>
-                    <Text style={styles.calloutMeta}>
-                      {shop.rating.toFixed(1)} ★  ·  {shop.hours}
-                    </Text>
+                    <Text style={styles.calloutMeta}>{shop.hours}</Text>
                   </View>
                 </Callout>
               </Marker>
@@ -301,10 +290,6 @@ export default function ShopsScreen() {
               <Text style={styles.mapSheetName}>{selectedShop.name}</Text>
               <Text style={styles.mapSheetAddress}>{selectedShop.address}</Text>
               <View style={styles.mapSheetMeta}>
-                <View style={styles.ratingRow}>
-                  <Star size={12} color={colors.orange} fill={colors.orange} strokeWidth={0} />
-                  <Text style={styles.ratingText}>{selectedShop.rating.toFixed(1)}</Text>
-                </View>
                 {selectedShop.distance !== undefined && (
                   <Text style={styles.distance}>{t('shops.km', { distance: selectedShop.distance })}</Text>
                 )}
@@ -332,22 +317,22 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
 
   header: {
-    backgroundColor: colors.karto,
+    backgroundColor: colors.white,
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomLeftRadius: radius.xl,
-    borderBottomRightRadius: radius.xl,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
   },
-  title: { ...typography.h1, color: colors.white },
-  subtitle: { ...typography.body, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
+  title: { ...typography.h1, color: colors.textPrimary },
+  subtitle: { ...typography.body, color: colors.textSecondary, marginTop: 2 },
 
   // Segmented
   segmented: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: colors.surface,
     borderRadius: radius.md,
     padding: 3,
     gap: 2,
@@ -360,7 +345,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   segBtnActive: {
-    backgroundColor: colors.kartoLight,
+    backgroundColor: colors.karto,
   },
 
   // Filters
@@ -436,9 +421,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     flexWrap: 'wrap',
   },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  ratingText: { ...typography.caption, fontFamily: 'Inter_600SemiBold', color: colors.textPrimary },
-  reviewCount: { ...typography.caption, color: colors.textMuted },
   distance: { ...typography.caption, color: colors.karto },
   openBadge: {
     ...typography.tiny,

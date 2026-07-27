@@ -20,6 +20,7 @@ import {
 import {
   type CategoryItem,
   type AftermarketPart,
+  type FitmentLevel,
   type Shop,
   type ShopReview,
   categories,
@@ -179,11 +180,7 @@ function mapDbRefsToPartResult(
     equivalents: aftermarketRefs.map((r) => ({
       manufacturer: r.manufacturer ?? '',
       ref: r.ref_number,
-      tier: 2 as const,
-      tierLabel: 'Bon rapport',
-      priceMin: 0,
-      priceMax: 0,
-      shopsCount: 0,
+      fitmentLevel: 'unverified' as FitmentLevel,
     })),
     avoid: [],
     counterfeit: null,

@@ -29,14 +29,12 @@ export const categories: CategoryItem[] = [
   { id: 'amortisseurs', label: 'Amortis.', icon: 'move-vertical' },
 ];
 
+export type FitmentLevel = 'confirmed' | 'likely' | 'unverified';
+
 export type AftermarketPart = {
   manufacturer: string;
   ref: string;
-  tier: 1 | 2 | 3;
-  tierLabel: string;
-  priceMin: number;
-  priceMax: number;
-  shopsCount: number;
+  fitmentLevel: FitmentLevel;
 };
 
 export const oilFilterResult = {
@@ -48,42 +46,10 @@ export const oilFilterResult = {
     note: 'Filtre EA211 essence — version chinoise marché DZ',
   },
   equivalents: [
-    {
-      manufacturer: 'Mann-Filter',
-      ref: 'W 712/95',
-      tier: 3,
-      tierLabel: 'Premium',
-      priceMin: 3500,
-      priceMax: 4500,
-      shopsCount: 3,
-    },
-    {
-      manufacturer: 'Bosch',
-      ref: 'F 026 407 143',
-      tier: 3,
-      tierLabel: 'Premium',
-      priceMin: 3200,
-      priceMax: 4000,
-      shopsCount: 2,
-    },
-    {
-      manufacturer: 'Mahle',
-      ref: 'OC 593',
-      tier: 3,
-      tierLabel: 'Premium',
-      priceMin: 3000,
-      priceMax: 3800,
-      shopsCount: 2,
-    },
-    {
-      manufacturer: 'Hengst',
-      ref: 'H314W',
-      tier: 2,
-      tierLabel: 'Bon rapport',
-      priceMin: 2800,
-      priceMax: 3500,
-      shopsCount: 1,
-    },
+    { manufacturer: 'Mann-Filter', ref: 'W 712/95',      fitmentLevel: 'confirmed' },
+    { manufacturer: 'Bosch',       ref: 'F 026 407 143', fitmentLevel: 'confirmed' },
+    { manufacturer: 'Mahle',       ref: 'OC 593',        fitmentLevel: 'confirmed' },
+    { manufacturer: 'Hengst',      ref: 'H314W',         fitmentLevel: 'likely'    },
   ] as AftermarketPart[],
   avoid: [
     { brand: 'Vestal', ref: 'VS-FH37', reason: 'Qualité douteuse' },

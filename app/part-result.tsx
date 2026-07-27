@@ -18,7 +18,10 @@ import {
 } from 'lucide-react-native';
 import { colors, radius, spacing, typography } from '@/lib/theme';
 import { oilFilterResult as data } from '@/lib/mock';
-import { Badge, Button, Card, Stars } from '@/components/ui';
+import { Button, Card } from '@/components/ui';
+import { FitmentIndicator } from '@/components/FitmentIndicator';
+import { PartThumbnail } from '@/components/PartThumbnail';
+import { ltrText } from '@/lib/rtl';
 
 export default function PartResultScreen() {
   const router = useRouter();
@@ -65,32 +68,17 @@ export default function PartResultScreen() {
         </View>
 
         {/* ---------------------------- Équivalents ---------------------------- */}
-        <Text style={styles.sectionTitle}>Marques compatibles vérifiées</Text>
+        <Text style={styles.sectionTitle}>Équivalences</Text>
         <View style={{ gap: spacing.sm }}>
           {data.equivalents.map((part) => (
             <Card key={part.ref} style={styles.partCard}>
+              <PartThumbnail categoryId="filtre-huile" partRef={part.ref} size={48} />
               <View style={{ flex: 1 }}>
-                <View style={styles.partTopRow}>
-                  <Text style={styles.partName}>
-                    {part.manufacturer}{' '}
-                    <Text style={styles.partRef}>{part.ref}</Text>
-                  </Text>
-                  <Stars tier={part.tier} />
-                </View>
-                <View style={styles.partMetaRow}>
-                  <Badge
-                    label={part.tierLabel}
-                    variant={part.tier === 3 ? 'success' : 'neutral'}
-                  />
-                  <Text style={styles.partPrice}>
-                    {part.priceMin.toLocaleString('fr-FR')} –{' '}
-                    {part.priceMax.toLocaleString('fr-FR')} DA
-                  </Text>
-                </View>
-                <Text style={styles.partShops}>
-                  Disponible dans {part.shopsCount} magasin
-                  {part.shopsCount > 1 ? 's' : ''} à Béjaïa
+                <Text style={styles.partName}>
+                  {part.manufacturer}{' '}
+                  <Text style={[styles.partRef, ltrText]}>{part.ref}</Text>
                 </Text>
+                <FitmentIndicator level={part.fitmentLevel} />
               </View>
             </Card>
           ))}
@@ -220,22 +208,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
 
-  partCard: { flexDirection: 'row' },
-  partTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  partName: { ...typography.h3, fontSize: 16, color: colors.textPrimary },
+  partCard: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  partName: { ...typography.h3, fontSize: 15, color: colors.textPrimary, marginBottom: 4 },
   partRef: { fontFamily: 'Inter_500Medium', color: colors.textSecondary },
-  partMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: spacing.sm,
-  },
-  partPrice: { ...typography.bodyL, fontFamily: 'Inter_600SemiBold', color: colors.textPrimary },
-  partShops: { ...typography.caption, color: colors.karto, marginTop: 6 },
 
   avoidCard: {
     backgroundColor: colors.warningBg,

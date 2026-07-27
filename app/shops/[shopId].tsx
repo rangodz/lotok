@@ -19,7 +19,6 @@ import {
   MessageCircle,
   Navigation,
   Phone,
-  Star,
   Tag,
 } from 'lucide-react-native';
 import { colors, radius, spacing, typography } from '@/lib/theme';
@@ -55,48 +54,6 @@ function ActionBtn({
         {label}
       </Text>
     </Pressable>
-  );
-}
-
-// ── Review card ───────────────────────────────────────────────────────────────
-
-function ReviewCard({
-  initials,
-  name,
-  rating,
-  text,
-  date,
-}: {
-  initials: string;
-  name: string;
-  rating: number;
-  text: string;
-  date: string;
-}) {
-  return (
-    <View style={styles.reviewCard}>
-      <View style={styles.reviewTop}>
-        <View style={styles.reviewAvatar}>
-          <Text style={styles.reviewInitials}>{initials}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.reviewName}>{name}</Text>
-          <View style={styles.reviewStars}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                size={11}
-                color={i < rating ? colors.orange : colors.border}
-                fill={i < rating ? colors.orange : 'transparent'}
-                strokeWidth={1.5}
-              />
-            ))}
-          </View>
-        </View>
-        <Text style={styles.reviewDate}>{date}</Text>
-      </View>
-      <Text style={styles.reviewText}>{text}</Text>
-    </View>
   );
 }
 
@@ -188,19 +145,6 @@ export default function ShopDetailScreen() {
 
         {/* Stats row */}
         <Animated.View entering={FadeInDown.delay(80).duration(350).springify()} style={styles.statsRow}>
-          {/* Rating */}
-          <View style={styles.statItem}>
-            <View style={styles.ratingBig}>
-              <Star size={16} color={colors.orange} fill={colors.orange} strokeWidth={0} />
-              <Text style={styles.ratingBigText}>{shop.rating.toFixed(1)}</Text>
-            </View>
-            <Text style={styles.statLabel}>
-              {t('shops.reviews', { count: shop.reviewCount })}
-            </Text>
-          </View>
-
-          <View style={styles.statDivider} />
-
           {/* Hours */}
           <View style={styles.statItem}>
             <View style={styles.statIconRow}>
@@ -253,24 +197,6 @@ export default function ShopDetailScreen() {
           ))}
         </View>
 
-        {/* Reviews */}
-        <Text style={styles.sectionTitle}>{t('shops.reviewsLabel')}</Text>
-        {shop.reviews.length === 0 ? (
-          <Text style={styles.noReviews}>{t('shops.noReviews')}</Text>
-        ) : (
-          <View style={styles.reviewsList}>
-            {shop.reviews.map((r) => (
-              <ReviewCard
-                key={r.id}
-                initials={r.authorInitials}
-                name={r.authorName}
-                rating={r.rating}
-                text={r.text}
-                date={r.date}
-              />
-            ))}
-          </View>
-        )}
       </ScrollView>
     </View>
   );
@@ -338,8 +264,6 @@ const styles = StyleSheet.create({
   statDivider: { width: 1, backgroundColor: colors.border },
   statIconRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   statValue: { ...typography.h3, fontSize: 15 },
-  ratingBig: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  ratingBigText: { ...typography.h3, fontSize: 18, color: colors.textPrimary },
   statLabel: { ...typography.tiny, color: colors.textMuted },
 
   // Actions
@@ -391,32 +315,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   brandChipText: { ...typography.caption, color: colors.karto, fontFamily: 'Inter_500Medium' },
-
-  // Reviews
-  reviewsList: { gap: spacing.sm },
-  reviewCard: {
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    gap: spacing.sm,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-  reviewTop: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
-  reviewAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.full,
-    backgroundColor: colors.kartoSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  reviewInitials: { ...typography.caption, fontFamily: 'Inter_600SemiBold', color: colors.karto },
-  reviewName: { ...typography.h3, fontSize: 14, color: colors.textPrimary },
-  reviewStars: { flexDirection: 'row', gap: 2, marginTop: 2 },
-  reviewDate: { ...typography.tiny, color: colors.textMuted },
-  reviewText: { ...typography.body, color: colors.textSecondary, lineHeight: 20 },
-  noReviews: { ...typography.body, color: colors.textMuted },
 
   // Error
   errorText: { ...typography.h3, color: colors.danger },

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts, spacing, typography } from '@/lib/theme';
+import type { FitmentLevel } from '@/lib/mock';
 
-export type FitmentLevel = 'confirmed' | 'likely' | 'unverified';
+export type { FitmentLevel };
 
 interface FitmentIndicatorProps {
   level: FitmentLevel;

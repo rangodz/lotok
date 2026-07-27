@@ -194,7 +194,9 @@ export default function ProfileScreen() {
               <Text style={styles.modeToggleTitle}>
                 {isPro ? t('profile.pro') : t('profile.individual')}
               </Text>
-              <Text style={styles.modeToggleDesc}>{t('profile.proToggleDesc')}</Text>
+              <Text style={styles.modeToggleDesc}>
+                {isPro ? t('profile.proToggleDesc') : t('profile.individualToggleDesc')}
+              </Text>
             </View>
             <Switch
               value={isPro}
