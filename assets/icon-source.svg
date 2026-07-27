@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="200" fill="#1E3A8A"/>
+
+  <!-- Letter "k" — Sora Bold approximation via paths -->
+  <!-- Vertical stem -->
+  <rect x="310" y="220" width="90" height="584" rx="10" fill="#FFFFFF"/>
+  <!-- Upper diagonal (top-right arm) -->
+  <polygon points="400,512 650,220 760,220 510,512" fill="#FFFFFF"/>
+  <!-- Lower diagonal (bottom-right leg) -->
+  <polygon points="400,512 510,512 760,804 650,804" fill="#FFFFFF"/>
+
+  <!-- Orange accent dot -->
+  <circle cx="690" cy="778" r="62" fill="#F97316"/>
+</svg>

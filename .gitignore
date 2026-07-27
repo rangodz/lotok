@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Supabase CLI temp
+supabase/.temp/
+
+# Native build artifacts
+ios/
+android/
+
+# OS
+.DS_Store
+*.orig
+
+# Editor
+.vscode/
+.idea/
