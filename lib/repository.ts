@@ -130,70 +130,214 @@ class MockRepository implements PartsRepository {
 
 // ── Supabase implementation ───────────────────────────────────────────────────
 
+// Colonnes de retour de la RPC nearby_shops (migration 0002).
+interface NearbyShopRow {
+  id: string;
+  name: string;
+  slug: string;
+  wilaya: string;
+  commune: string | null;
+  address: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  hours: { display?: string } | null;
+  is_verified: boolean;
+  result_lat: number | null;
+  result_lng: number | null;
+  distance_m: number | null;
+}
+
+// Forme retournée par search_parts_by_ref et récupérée depuis parts.
+interface DbPart {
+  id: string;
+  label: { fr: string; en?: string; ar?: string };
+  description: { fr?: string; en?: string } | null;
+}
+
+interface DbPartRef {
+  id: string;
+  part_id: string;
+  ref_number: string;
+  ref_type: 'oem' | 'aftermarket';
+  manufacturer: string | null;
+}
+
+function mapDbRefsToPartResult(
+  part: DbPart,
+  refs: DbPartRef[],
+): PartResultData {
+  const oemRef = refs.find((r) => r.ref_type === 'oem');
+  const aftermarketRefs = refs.filter((r) => r.ref_type === 'aftermarket');
+  return {
+    category: part.label.fr,
+    vehicleLabel: '',
+    oem: {
+      code: oemRef?.ref_number ?? '',
+      brand: oemRef?.manufacturer ?? '',
+      note: part.description?.fr ?? '',
+    },
+    equivalents: aftermarketRefs.map((r) => ({
+      manufacturer: r.manufacturer ?? '',
+      ref: r.ref_number,
+      tier: 2 as const,
+      tierLabel: 'Bon rapport',
+      priceMin: 0,
+      priceMax: 0,
+      shopsCount: 0,
+    })),
+    avoid: [],
+    counterfeit: null,
+  };
+}
+
+function mapNearbyRow(s: NearbyShopRow): Shop {
+  return {
+    id: s.id,
+    name: s.name,
+    address: s.address ?? `${s.commune ?? ''}, ${s.wilaya}`.trim(),
+    lat: s.result_lat ?? 0,
+    lng: s.result_lng ?? 0,
+    phone: s.phone ?? '',
+    whatsapp: s.whatsapp ?? undefined,
+    rating: 0,
+    reviewCount: 0,
+    isPartner: s.is_verified,
+    brands: [],
+    hours: s.hours?.display ?? '',
+    isOpenNow: true,
+    distance: s.distance_m != null
+      ? parseFloat((s.distance_m / 1000).toFixed(1))
+      : undefined,
+  };
+}
+
 class SupabaseRepository implements PartsRepository {
-  async getBrands(): Promise<Brand[]> {
-    // Fallback to local data — vehicle catalog is static
-    return [...BRANDS];
-  }
-
-  async getModels(brandId: string): Promise<VehicleModel[]> {
-    return getModelsForBrand(brandId);
-  }
-
-  async getEngines(modelId: string): Promise<EngineOption[]> {
-    return getEnginesForModel(modelId);
-  }
+  // Le catalogue véhicules est statique et identique aux données seedées.
+  async getBrands(): Promise<Brand[]> { return [...BRANDS]; }
+  async getModels(brandId: string): Promise<VehicleModel[]> { return getModelsForBrand(brandId); }
+  async getEngines(modelId: string): Promise<EngineOption[]> { return getEnginesForModel(modelId); }
 
   async getCategories(): Promise<CategoryItem[]> {
-    return [...categories];
+    if (!supabase) return [...categories];
+    const { data, error } = await supabase
+      .from('categories')
+      .select('slug, label, icon')
+      .is('parent_id', null)
+      .order('sort_order');
+    if (error || !data) return [...categories];
+    return data.map((c) => ({
+      id: c.slug as string,
+      label: (c.label as { fr: string }).fr,
+      icon: (c.icon as string) ?? '',
+    }));
   }
 
-  async getPartResult(
-    engineId: string,
-    categoryId: string,
-  ): Promise<PartResultData | null> {
+  async getPartResult(engineId: string, categoryId: string): Promise<PartResultData | null> {
     if (!supabase) return null;
-    const { data, error } = await supabase
-      .from('part_results')
-      .select('*')
-      .eq('engine_id', engineId)
-      .eq('category_id', categoryId)
+
+    // 1. Résoudre le slug de catégorie en UUID.
+    const { data: cat } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', categoryId)
       .maybeSingle();
-    if (error || !data) return null;
-    return data as PartResultData;
+    if (!cat) return null;
+
+    // 2. Trouver les pièces ayant une compatibilité pour ce moteur.
+    const { data: fitments } = await supabase
+      .from('part_fitments')
+      .select('part_id, confidence')
+      .eq('engine_id', engineId);
+    if (!fitments?.length) return null;
+
+    const partIds = fitments.map((f) => f.part_id as string);
+
+    // 3. Filtrer celles qui appartiennent à la catégorie demandée.
+    const { data: parts } = await supabase
+      .from('parts')
+      .select('id, label, description')
+      .in('id', partIds)
+      .eq('category_id', cat.id);
+    const part = parts?.[0] as DbPart | undefined;
+    if (!part) return null;
+
+    // 4. Récupérer les références OEM + aftermarket.
+    const { data: refs } = await supabase
+      .from('part_references')
+      .select('id, part_id, ref_number, ref_type, manufacturer')
+      .eq('part_id', part.id);
+
+    return mapDbRefsToPartResult(part, (refs ?? []) as DbPartRef[]);
   }
 
   async getNearbyShops(lat: number, lng: number): Promise<Shop[]> {
     if (!supabase) return [];
-    // Use PostGIS distance ordering if available, else fetch all + sort client-side
-    const { data, error } = await supabase
-      .from('shops')
-      .select('*')
-      .limit(50);
+    const { data, error } = await supabase.rpc('nearby_shops', {
+      lat,
+      lng,
+      radius_m: 20000,
+    });
     if (error || !data) return [];
-    return (data as Shop[])
-      .map((s) => ({ ...s, distance: parseFloat(haversineKm(lat, lng, s.lat, s.lng).toFixed(1)) }))
-      .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+    return (data as NearbyShopRow[]).map(mapNearbyRow);
   }
 
   async getShop(id: string): Promise<ShopWithReviews | null> {
     if (!supabase) return null;
-    const [{ data: shop }, { data: reviews }] = await Promise.all([
-      supabase.from('shops').select('*').eq('id', id).maybeSingle(),
-      supabase.from('shop_reviews').select('*').eq('shop_id', id).order('created_at', { ascending: false }),
+    const [{ data: shop }, { data: shopBrands }] = await Promise.all([
+      supabase.from('shops_geo').select('*').eq('id', id).maybeSingle(),
+      supabase.from('shop_brands').select('brands(name)').eq('shop_id', id),
     ]);
     if (!shop) return null;
-    return { ...(shop as Shop), reviews: (reviews ?? []) as ShopReview[] };
+
+    const s = shop as {
+      id: string; name: string; address: string | null;
+      commune: string | null; wilaya: string;
+      lat: number | null; lng: number | null;
+      phone: string | null; whatsapp: string | null;
+      is_verified: boolean; hours: { display?: string } | null;
+    };
+
+    const brandNames = (shopBrands ?? [])
+      .map((sb: any) => (Array.isArray(sb.brands) ? sb.brands[0]?.name : sb.brands?.name))
+      .filter((n): n is string => typeof n === 'string' && n.length > 0);
+
+    return {
+      id: s.id,
+      name: s.name,
+      address: s.address ?? `${s.commune ?? ''}, ${s.wilaya}`.trim(),
+      lat: s.lat ?? 0,
+      lng: s.lng ?? 0,
+      phone: s.phone ?? '',
+      whatsapp: s.whatsapp ?? undefined,
+      rating: 0,
+      reviewCount: 0,
+      isPartner: s.is_verified,
+      brands: brandNames,
+      hours: s.hours?.display ?? '',
+      isOpenNow: true,
+      reviews: [],
+    };
   }
 
   async searchByOemCode(code: string): Promise<PartResultData[]> {
     if (!supabase) return [];
-    const { data, error } = await supabase
-      .from('part_results')
-      .select('*')
-      .ilike('oem_code', `%${code}%`);
-    if (error || !data) return [];
-    return data as PartResultData[];
+
+    // Appelle la RPC search_parts_by_ref (match exact puis préfixe sur normalized).
+    const { data: parts, error } = await supabase.rpc('search_parts_by_ref', { q: code });
+    if (error || !parts?.length) return [];
+
+    const partIds = (parts as DbPart[]).map((p) => p.id);
+    const { data: refs } = await supabase
+      .from('part_references')
+      .select('id, part_id, ref_number, ref_type, manufacturer')
+      .in('part_id', partIds);
+
+    return (parts as DbPart[]).map((part) => {
+      const partRefs = (refs ?? []).filter(
+        (r: DbPartRef) => r.part_id === part.id,
+      ) as DbPartRef[];
+      return mapDbRefsToPartResult(part, partRefs);
+    });
   }
 }
 
