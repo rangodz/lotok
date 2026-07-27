@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import * as Location from 'expo-location';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { MapPin, List, Map, Star } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useShops, BEJAIA, type UserLocation } from '@/hooks/useShops';
 import type { Shop } from '@/lib/mock';
 import { Badge, SkeletonCard } from '@/components/ui';
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: colors.warningBorder,
+    borderBottomColor: colors.border,
   },
   fallbackText: { ...typography.caption, color: colors.warningDeep, flex: 1 },
 
@@ -411,7 +411,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.md,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   cardAvatar: {
     width: 44,
@@ -476,7 +477,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: spacing.sm,
     minWidth: 160,
-    ...shadow.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   calloutName: { ...typography.h3, fontSize: 13, color: colors.textPrimary },
   calloutMeta: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
@@ -492,7 +494,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radius.xl,
     padding: spacing.md,
     paddingBottom: 32,
-    ...shadow.md,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   mapSheetHandle: {
     width: 40,

@@ -22,7 +22,7 @@ import {
   Star,
   Tag,
 } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useShop } from '@/hooks/useShops';
 import { Badge } from '@/components/ui';
 
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.kartoDeep,
+    backgroundColor: colors.karto,
   },
   backButton: {
     position: 'absolute',
@@ -318,7 +318,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   shopName: { ...typography.h2, color: colors.textPrimary },
   addressRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
@@ -330,7 +331,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   statItem: { flex: 1, alignItems: 'center', gap: 4 },
   statDivider: { width: 1, backgroundColor: colors.border },
@@ -356,7 +358,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     borderWidth: 1.5,
     borderColor: colors.border,
-    ...shadow.xs,
   },
   actionBtnGreen: {
     backgroundColor: colors.greenAction,
@@ -398,7 +399,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     gap: spacing.sm,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   reviewTop: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   reviewAvatar: {

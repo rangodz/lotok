@@ -9,7 +9,7 @@ import {
   StyleProp,
 } from 'react-native';
 import { AlertCircle, Star } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 
 /* ---------------------------------- Card --------------------------------- */
 
@@ -30,7 +30,7 @@ type BadgeVariant = 'success' | 'danger' | 'warning' | 'neutral';
 const badgeColors: Record<BadgeVariant, { bg: string; fg: string }> = {
   success: { bg: colors.successBg, fg: colors.successDeep },
   danger: { bg: colors.dangerBg, fg: colors.dangerDeep },
-  warning: { bg: colors.warningBg, fg: colors.warningMid },
+  warning: { bg: colors.warningBg, fg: colors.warningDeep },
   neutral: { bg: colors.surface, fg: colors.textSecondary },
 };
 
@@ -105,8 +105,8 @@ export function Stars({ tier }: { tier: 1 | 2 | 3 }) {
         <Star
           key={i}
           size={14}
-          color={i <= tier ? colors.warning : colors.border}
-          fill={i <= tier ? colors.warning : 'transparent'}
+          color={i <= tier ? colors.orange : colors.border}
+          fill={i <= tier ? colors.orange : 'transparent'}
         />
       ))}
     </View>
@@ -281,7 +281,8 @@ const uiStyles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
 });
 
@@ -290,7 +291,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   badge: {
     borderRadius: radius.full,

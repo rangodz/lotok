@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Car, Wrench } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useSettingsStore, type UserMode } from '@/stores/settingsStore';
 
 interface ModeCardProps {
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.border,
     backgroundColor: colors.white,
-    ...shadow.xs,
   },
   cardSelected: {
     borderColor: colors.karto,

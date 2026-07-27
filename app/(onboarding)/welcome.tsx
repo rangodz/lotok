@@ -39,7 +39,7 @@ const SLIDES: Slide[] = [
     titleKey: 'onboarding.slide2Title',
     bodyKey: 'onboarding.slide2Body',
     Icon: AlertTriangle,
-    iconBg: colors.orangeSurface,
+    iconBg: colors.warningBg,
     iconColor: colors.orange,
   },
   {

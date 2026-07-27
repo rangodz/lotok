@@ -27,7 +27,7 @@ import {
   Wrench,
   Zap,
 } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { categories } from '@/lib/mock';
 import { useVehicleStore } from '@/stores/vehicleStore';
 import { useSettingsStore } from '@/stores/settingsStore';
@@ -194,7 +194,7 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>{t('home.maintenanceSection')}</Text>
               <Card style={styles.maintenanceCard}>
                 <View style={styles.maintenanceIconWrap}>
-                  <Droplet size={20} color={colors.orangeDeep} />
+                  <Droplet size={20} color={colors.textSecondary} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.maintenanceTitle}>{t('home.maintenanceAlert')}</Text>
@@ -249,7 +249,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    ...shadow.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   vehicleCardEmpty: {
     marginTop: spacing.md,
@@ -262,7 +263,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: colors.kartoLight,
-    ...shadow.xs,
   },
   vehicleIcon: {
     width: 44,
@@ -308,7 +308,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     alignItems: 'center',
     gap: 6,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   gridIconWrap: {
     width: 40,

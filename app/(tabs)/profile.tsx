@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import {
   BookOpen,
@@ -26,7 +25,7 @@ import {
   Shield,
   Star,
 } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useSettingsStore } from '@/stores/settingsStore';
 import type { SupportedLanguage } from '@/lib/i18n';
 import i18n from '@/lib/i18n';
@@ -242,12 +241,7 @@ export default function ProfileScreen() {
 
       {/* Premium card */}
       <View style={styles.section}>
-        <LinearGradient
-          colors={[colors.karto, colors.kartoDeep]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.premiumCard}
-        >
+        <View style={styles.premiumCard}>
           <View style={styles.premiumTop}>
             <Star size={22} color="rgba(255,255,255,0.9)" strokeWidth={1.8} />
             <Text style={styles.premiumTitle}>{t('profile.premium')}</Text>
@@ -256,7 +250,7 @@ export default function ProfileScreen() {
           <View style={styles.premiumCta}>
             <Text style={styles.premiumCtaText}>{t('profile.premiumCta')}</Text>
           </View>
-        </LinearGradient>
+        </View>
       </View>
 
       {/* Help section */}
@@ -348,7 +342,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     overflow: 'hidden',
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
 
   // Mode toggle
@@ -380,7 +375,7 @@ const styles = StyleSheet.create({
   rowLabel: { ...typography.body, color: colors.textPrimary, flex: 1 },
   rowRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   rowValue: { ...typography.caption, color: colors.textSecondary },
-  rowDivider: { height: 1, backgroundColor: colors.border, marginLeft: 48 + spacing.md },
+  rowDivider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border, marginLeft: 48 + spacing.md },
 
   // Premium card
   premiumCard: {
@@ -388,7 +383,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     gap: spacing.sm,
-    ...shadow.md,
+    backgroundColor: colors.karto,
   },
   premiumTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   premiumTitle: { ...typography.h3, color: colors.white },

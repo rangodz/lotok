@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   XCircle,
 } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { oilFilterResult as data } from '@/lib/mock';
 import { Badge, Button, Card, SkeletonCard, Stars } from '@/components/ui';
 import { ltrText } from '@/lib/rtl';
@@ -106,7 +106,7 @@ export default function PartResultScreen() {
               key={item.ref}
               style={[
                 styles.avoidRow,
-                i > 0 && { borderTopWidth: 1, borderTopColor: colors.warningBorder },
+                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
               ]}
             >
               <XCircle size={18} color={colors.warning} />
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.karto,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...shadow.md,
   },
   oemHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   oemLabel: {
@@ -241,12 +240,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   partPrice: { ...typography.bodyL, fontFamily: 'Inter_600SemiBold', color: colors.textPrimary },
-  partShops: { ...typography.caption, color: colors.success, marginTop: 6 },
+  partShops: { ...typography.caption, color: colors.karto, marginTop: 6 },
 
   avoidCard: {
     backgroundColor: colors.warningBg,
-    borderWidth: 1,
-    borderColor: colors.warningBorder,
     padding: 0,
     overflow: 'hidden',
   },
@@ -257,12 +254,10 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   avoidName: { ...typography.h3, fontSize: 14, color: colors.warningDeep },
-  avoidReason: { ...typography.caption, color: colors.warningMid },
+  avoidReason: { ...typography.caption, color: colors.warningDeep },
 
   counterfeitCard: {
     backgroundColor: colors.dangerBg,
-    borderWidth: 1,
-    borderColor: colors.dangerBorder,
   },
   counterfeitHeader: {
     flexDirection: 'row',
@@ -284,7 +279,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dangerDeep,
     marginTop: 7,
   },
-  signText: { ...typography.body, color: colors.dangerDarker, flex: 1 },
+  signText: { ...typography.body, color: colors.dangerDeep, flex: 1 },
   counterfeitFooter: {
     ...typography.caption,
     color: colors.dangerDeep,

@@ -3,11 +3,12 @@
  * Source : 01_BRAND_BIBLE.md
  */
 
+import { StyleSheet } from 'react-native';
+
 export const colors = {
   // Brand
   karto: '#1E3A8A',
   kartoLight: '#3B5BDB',
-  kartoDeep: '#0F1F4D',
   orange: '#F97316',
   orangeLight: '#FB923C',
   orangeDeep: '#C2410C',
@@ -15,26 +16,19 @@ export const colors = {
   // Semantic
   success: '#10B981',
   successBg: '#D1FAE5',
+  successDeep: '#047857',
   danger: '#EF4444',
   dangerBg: '#FEE2E2',
   dangerDeep: '#B91C1C',
   warning: '#F59E0B',
   warningBg: '#FEF3C7',
-  info: '#3B82F6',
+  warningDeep: '#92400E',
+  greenAction: '#22C55E',    // green-500 — WhatsApp / action green
 
-  // Extended brand palette (phase 5 — fixes hardcoded values)
+  // Extended brand palette
   kartoSurface: '#EEF2FF',   // indigo-50 — icon bgs, active state fills
   kartoPale: '#A5B4FC',      // indigo-300 — decorative text on karto bg
   kartoNote: '#C7D2FE',      // indigo-200 — note text on karto bg
-  kartoActiveCard: '#F8FAFF',// active vehicle card background
-  orangeSurface: '#FFF7ED',  // orange-50 — icon bgs
-  successDeep: '#047857',    // emerald-700 — deep success text
-  warningBorder: '#FDE68A',  // amber-200 — warning card borders
-  warningDeep: '#92400E',    // amber-800 — deep warning text
-  warningMid: '#B45309',     // amber-700 — medium warning text
-  dangerBorder: '#FECACA',   // red-200 — danger card borders
-  dangerDarker: '#991B1B',   // red-800 — deepest danger text
-  greenAction: '#22C55E',    // green-500 — WhatsApp / action green
 
   // Neutrals
   white: '#FFFFFF',
@@ -96,4 +90,10 @@ export const shadow = {
     shadowRadius: 12,
     elevation: 5,
   },
+} as const;
+
+/** Hairline row separator — use instead of { height: 1, backgroundColor: colors.border }. */
+export const separator = {
+  height: StyleSheet.hairlineWidth,
+  backgroundColor: colors.border,
 } as const;

@@ -10,7 +10,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Car, CheckCircle2, Plus } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import { useVehicleStore, type UserVehicle } from '@/stores/vehicleStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { Badge, Card, EmptyState } from '@/components/ui';
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   vehicleCardActive: {
     borderWidth: 2,
     borderColor: colors.karto,
-    backgroundColor: colors.kartoActiveCard,
+    backgroundColor: colors.kartoSurface,
   },
   vehicleCardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   vehicleAvatar: {
@@ -280,7 +280,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    ...shadow.md,
   },
   ctaButtonText: { ...typography.h3, color: colors.white },
 
@@ -306,5 +305,5 @@ const styles = StyleSheet.create({
   },
   maintenanceLabel: { ...typography.body, color: colors.textPrimary, flex: 1 },
   maintenanceDue: { ...typography.caption, fontFamily: 'Inter_600SemiBold' },
-  divider: { height: 1, backgroundColor: colors.border },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
 });

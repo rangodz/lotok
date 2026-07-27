@@ -10,7 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, CheckCircle2, Search } from 'lucide-react-native';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 import {
   BRANDS,
   ENGINES,
@@ -519,7 +519,8 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     alignItems: 'center',
     gap: 6,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   brandAvatar: {
     width: 48,
@@ -538,7 +539,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: 14,
     marginBottom: spacing.sm,
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   listRowText: { ...typography.bodyL, color: colors.textPrimary },
 
@@ -552,7 +554,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    ...shadow.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   engineMain: { flex: 1, gap: 2 },
   engineLabel: { ...typography.bodyL, color: colors.textPrimary },
@@ -569,7 +572,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     overflow: 'hidden',
-    ...shadow.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   confirmRow: {
     flexDirection: 'row',
@@ -590,7 +594,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: spacing.sm,
-    ...shadow.md,
   },
   ctaButtonText: { ...typography.h3, color: colors.white, fontSize: 16 },
 

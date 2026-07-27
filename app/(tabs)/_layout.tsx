@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Camera, Home, MapPin, Search, User } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, radius, shadow, spacing, typography } from '@/lib/theme';
+import { colors, radius, spacing, typography } from '@/lib/theme';
 
 type LucideIcon = React.ComponentType<{
   size: number;
@@ -90,6 +90,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -28,
-    ...shadow.md,
   },
 });
