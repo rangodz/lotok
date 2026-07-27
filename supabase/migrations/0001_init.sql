@@ -6,7 +6,13 @@
 -- (Database > Extensions > postgis) avant de lancer ce fichier.
 -- =============================================================
 
+create extension if not exists postgis;
 create extension if not exists pg_trgm;
+
+-- PostGIS est installé dans le schéma extensions sur Supabase.
+-- On l'ajoute au search_path pour que le type geography soit accessible
+-- dans les DDL et les fonctions de cette migration.
+set search_path to public, extensions;
 
 -- -------------------------------------------------------------
 -- Types
@@ -31,12 +37,12 @@ create domain i18n_text as jsonb check (value ->> 'fr' is not null);
 create function public.touch_updated_at()
 returns trigger
 language plpgsql
-as $
+as $$
 begin
   new.updated_at := now();
   return new;
 end;
-$;
+$$;
 
 -- =============================================================
 -- 1. Utilisateurs
@@ -63,14 +69,14 @@ returns trigger
 language plpgsql
 security definer
 set search_path = public
-as $
+as $$
 begin
   insert into public.profiles (id, phone)
   values (new.id, coalesce(new.phone, ''))
   on conflict (id) do nothing;
   return new;
 end;
-$;
+$$;
 
 create trigger on_auth_user_created
   after insert on auth.users
@@ -150,7 +156,7 @@ returns void
 language plpgsql
 security invoker
 set search_path = public
-as $
+as $$
 begin
   update public.user_vehicles
      set is_active = false
@@ -160,7 +166,7 @@ begin
      set is_active = true
    where id = p_vehicle_id and user_id = auth.uid();
 end;
-$;
+$$;
 
 -- =============================================================
 -- 4. Catalogue pièces
@@ -309,7 +315,7 @@ language sql
 stable
 security invoker
 set search_path = public
-as $
+as $$
   with needle as (
     select upper(regexp_replace(q, '[^a-zA-Z0-9]', '', 'g')) as n
   )
@@ -320,7 +326,7 @@ as $
    where length(needle.n) >= 3
      and (r.normalized = needle.n or r.normalized like needle.n || '%')
    limit 50;
-$;
+$$;
 
 -- Magasins à proximité, triés par distance. Pas de filtre par stock :
 -- l'annuaire ne gère pas l'inventaire.
@@ -342,7 +348,7 @@ language sql
 stable
 security invoker
 set search_path = public, extensions
-as $
+as $$
   select s.id, s.name, s.wilaya, s.commune, s.phone, s.whatsapp,
          st_distance(s.location, st_makepoint(lng, lat)::geography) as distance_m
     from public.shops s
@@ -350,7 +356,7 @@ as $
      and st_dwithin(s.location, st_makepoint(lng, lat)::geography, radius_m)
    order by distance_m
    limit 50;
-$;
+$$;
 
 -- Verdict de compatibilité utilisé par scan-result.
 create function public.check_fitment(p_part_id uuid, p_engine_id uuid)
@@ -359,13 +365,13 @@ language sql
 stable
 security invoker
 set search_path = public
-as $
+as $$
   select coalesce(
     (select confidence from public.part_fitments
       where part_id = p_part_id and engine_id = p_engine_id),
     'unverified'::fitment_confidence
   );
-$;
+$$;
 
 -- =============================================================
 -- 9. Row Level Security
